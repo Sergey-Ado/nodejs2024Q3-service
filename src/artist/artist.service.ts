@@ -38,5 +38,6 @@ export class ArtistService {
     if (indexArtist == -1)
       throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
     artists.splice(indexArtist, 1);
+    return `Artist id=${id} deleted`;
   }
 }

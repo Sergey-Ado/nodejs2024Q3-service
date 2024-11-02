@@ -51,5 +51,6 @@ export class UserService {
     if (indexUser == -1)
       throw new HttpException("user doesn't exist", HttpStatus.NOT_FOUND);
     users.splice(indexUser, 1);
+    return `User id=${id} deleted`;
   }
 }
