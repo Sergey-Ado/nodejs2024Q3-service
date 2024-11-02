@@ -12,7 +12,6 @@ export class AlbumService {
       id: uuid(),
       ...createAlbumDto,
     };
-    if (album.artistId == undefined) album.artistId = null;
     albums.push(album);
     console.log(album.artistId);
     return album;
@@ -35,7 +34,7 @@ export class AlbumService {
       throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
     album.name = updateAlbumDto.name;
     album.year = updateAlbumDto.year;
-    album.artistId = updateAlbumDto.artistId || null;
+    album.artistId = updateAlbumDto.artistId;
     return album;
   }
 

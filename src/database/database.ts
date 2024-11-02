@@ -20,6 +20,22 @@ export interface Album {
   artistId: string | null; // refers to Artist
 }
 
+export interface Track {
+  id: string; // uuid v4
+  name: string;
+  artistId: string | null; // refers to Artist
+  albumId: string | null; // refers to Album
+  duration: number; // integer number
+}
+
+export interface Favorites {
+  artists: string[]; // favorite artists ids
+  albums: string[]; // favorite albums ids
+  tracks: string[]; // favorite tracks ids
+}
+
 export const users: User[] = [];
 export const artists: Artist[] = [];
 export const albums: Album[] = [];
+export const tracks: Track[] = [];
+export const favorites: Favorites[] = [];
