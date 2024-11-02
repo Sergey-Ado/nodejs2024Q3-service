@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { artists } from 'src/database/database';
+import { albums, artists, favorites, tracks } from 'src/database/database';
 import { StatusCodes } from 'http-status-codes';
 import { v4 as uuid } from 'uuid';
 
@@ -38,6 +38,16 @@ export class ArtistService {
     if (indexArtist == -1)
       throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
     artists.splice(indexArtist, 1);
+
+    albums
+      .filter((album) => album.artistId == id)
+      .forEach((album) => (album.artistId = null));
+
+    tracks
+      .filter((track) => track.artistId == id)
+      .forEach((track) => (track.artistId = null));
+
+    favorites.artists = favorites.artists.filter((artistId) => artistId != id);
     return `Artist id=${id} deleted`;
   }
 }

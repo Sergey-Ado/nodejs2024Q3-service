@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { Track, tracks } from 'src/database/database';
+import { favorites, Track, tracks } from 'src/database/database';
 import { v4 as uuid } from 'uuid';
 import { StatusCodes } from 'http-status-codes';
 
@@ -43,6 +43,9 @@ export class TrackService {
     if (indexTrack == -1)
       throw new HttpException("Track doesn't exist", StatusCodes.NOT_FOUND);
     tracks.splice(indexTrack, 1);
+
+    favorites.tracks = favorites.tracks.filter((trackId) => trackId != id);
+
     return `Track id=${id} deleted`;
   }
 }

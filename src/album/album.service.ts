@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Album, albums } from 'src/database/database';
+import { Album, albums, favorites, tracks } from 'src/database/database';
 import { v4 as uuid } from 'uuid';
 import { StatusCodes } from 'http-status-codes';
 
@@ -43,6 +43,13 @@ export class AlbumService {
     if (indexAlbum == -1)
       throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
     albums.splice(indexAlbum, 1);
+
+    tracks
+      .filter((track) => track.albumId == id)
+      .forEach((track) => (track.albumId = null));
+
+    favorites.albums = favorites.albums.filter((albumId) => albumId != id);
+
     return `Album id=${id} deleted`;
   }
 }
