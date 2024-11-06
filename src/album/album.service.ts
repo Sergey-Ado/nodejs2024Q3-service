@@ -13,7 +13,6 @@ export class AlbumService {
       ...createAlbumDto,
     };
     albums.push(album);
-    console.log(album.artistId);
     return album;
   }
 
