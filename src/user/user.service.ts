@@ -7,19 +7,26 @@ import { v4 as uuid } from 'uuid';
 @Injectable()
 export class UserService {
   create(createUserDto: CreateUserDto) {
-    const user: Omit<User, 'password'> = {
+    const user: User = {
       id: uuid(),
       login: createUserDto.login,
+      password: createUserDto.password,
       version: 1,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    users.push({ ...user, password: createUserDto.password });
-    return user;
+    users.push(user);
+    const cutUser = { ...user };
+    delete cutUser.password;
+    return cutUser;
   }
 
   findAll() {
-    return users;
+    return users.map((user) => {
+      const cutUser = { ...user };
+      delete cutUser.password;
+      return cutUser;
+    });
   }
 
   findOne(id: string) {
