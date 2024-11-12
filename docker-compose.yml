@@ -1,0 +1,19 @@
+version: '3.0'
+services:
+  postgres:
+    env_file:
+      - .env
+    container_name: postgres
+    build: ./postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: on-failure
+    networks:
+      - my_net
+networks:
+  my_net:
+    driver: bridge
+volumes:
+  postgres_data:
