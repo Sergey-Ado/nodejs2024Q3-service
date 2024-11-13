@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { albums, favorites, tracks } from 'src/database/database';
 import { StatusCodes } from 'http-status-codes';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -50,15 +49,27 @@ export class ArtistService {
       where: { id },
     });
 
-    albums
-      .filter((album) => album.artistId == id)
-      .forEach((album) => (album.artistId = null));
+    await this.prisma.album.updateMany({
+      where: { artistId: id },
+      data: { artistId: null },
+    });
 
-    tracks
-      .filter((track) => track.artistId == id)
-      .forEach((track) => (track.artistId = null));
+    await this.prisma.album.updateMany({
+      where: { artistId: id },
+      data: { artistId: null },
+    });
 
+    let favorites = await this.prisma.favorites.findUnique({
+      where: { id: 1 },
+    });
+    if (!favorites)
+      favorites = await this.prisma.favorites.create({
+        data: { artists: [], albums: [], tracks: [] },
+      });
     favorites.artists = favorites.artists.filter((artistId) => artistId != id);
-    return `Artist id=${id} deleted`;
+    await this.prisma.favorites.update({
+      where: { id: 1 },
+      data: { artists: favorites.artists },
+    });
   }
 }

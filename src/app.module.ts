@@ -11,6 +11,13 @@ import { PrismaModule } from './prisma/prisma.module';
 @Module({
   controllers: [AppController],
   providers: [AppService],
-  imports: [UserModule, ArtistModule, AlbumModule, TrackModule, FavoriteModule, PrismaModule],
+  imports: [
+    UserModule,
+    ArtistModule,
+    AlbumModule,
+    TrackModule,
+    FavoriteModule,
+    PrismaModule,
+  ],
 })
 export class AppModule {}

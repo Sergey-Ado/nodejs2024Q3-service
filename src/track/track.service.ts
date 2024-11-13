@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { favorites } from 'src/database/database';
 import { StatusCodes } from 'http-status-codes';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -50,6 +49,17 @@ export class TrackService {
       where: { id },
     });
 
+    let favorites = await this.prisma.favorites.findUnique({
+      where: { id: 1 },
+    });
+    if (!favorites)
+      favorites = await this.prisma.favorites.create({
+        data: { artists: [], albums: [], tracks: [] },
+      });
     favorites.tracks = favorites.tracks.filter((trackId) => trackId != id);
+    await this.prisma.favorites.update({
+      where: { id: 1 },
+      data: { tracks: favorites.tracks },
+    });
   }
 }
