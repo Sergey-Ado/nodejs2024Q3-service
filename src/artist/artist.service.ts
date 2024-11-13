@@ -4,40 +4,52 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { albums, artists, favorites, tracks } from 'src/database/database';
 import { StatusCodes } from 'http-status-codes';
 import { v4 as uuid } from 'uuid';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ArtistService {
-  create(createArtistDto: CreateArtistDto) {
-    const artist = { id: uuid(), ...createArtistDto };
-    artists.push(artist);
-    return artist;
+  constructor(private prisma: PrismaService) {}
+
+  async create(createArtistDto: CreateArtistDto) {
+    return await this.prisma.artist.create({
+      data: { ...createArtistDto },
+    });
   }
 
-  findAll() {
-    return artists;
+  async findAll() {
+    return await this.prisma.artist.findMany();
   }
 
-  findOne(id: string) {
-    const artist = artists.find((artist) => artist.id == id);
+  async findOne(id: string) {
+    const artist = await this.prisma.artist.findUnique({
+      where: { id },
+    });
     if (!artist)
       throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
     return artist;
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto) {
-    const artist = artists.find((artist) => artist.id == id);
+  async update(id: string, updateArtistDto: UpdateArtistDto) {
+    const artist = await this.prisma.artist.findUnique({
+      where: { id },
+    });
     if (!artist)
       throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
-    artist.name = updateArtistDto.name;
-    artist.grammy = updateArtistDto.grammy;
-    return artist;
+    return await this.prisma.artist.update({
+      where: { id },
+      data: { ...updateArtistDto },
+    });
   }
 
-  remove(id: string) {
-    const indexArtist = artists.findIndex((artist) => artist.id == id);
-    if (indexArtist == -1)
+  async remove(id: string) {
+    const artist = await this.prisma.artist.findUnique({
+      where: { id },
+    });
+    if (!artist)
       throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
-    artists.splice(indexArtist, 1);
+    await this.prisma.artist.delete({
+      where: { id },
+    });
 
     albums
       .filter((album) => album.artistId == id)
