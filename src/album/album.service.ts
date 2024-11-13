@@ -4,44 +4,52 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album, albums, favorites, tracks } from 'src/database/database';
 import { v4 as uuid } from 'uuid';
 import { StatusCodes } from 'http-status-codes';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AlbumService {
-  create(createAlbumDto: CreateAlbumDto) {
-    const album: Album = {
-      id: uuid(),
-      ...createAlbumDto,
-    };
-    albums.push(album);
-    return album;
+  constructor(private prisma: PrismaService) {}
+
+  async create(createAlbumDto: CreateAlbumDto) {
+    return this.prisma.album.create({
+      data: { ...createAlbumDto },
+    });
   }
 
-  findAll() {
-    return albums;
+  async findAll() {
+    return await this.prisma.album.findMany();
   }
 
-  findOne(id: string) {
-    const album = albums.find((album) => album.id == id);
+  async findOne(id: string) {
+    const album = await this.prisma.album.findUnique({
+      where: { id },
+    });
     if (!album)
       throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
     return album;
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const album = albums.find((album) => album.id == id);
+  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    const album = await this.prisma.album.findUnique({
+      where: { id },
+    });
     if (!album)
       throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
-    album.name = updateAlbumDto.name;
-    album.year = updateAlbumDto.year;
-    album.artistId = updateAlbumDto.artistId;
-    return album;
+    return await this.prisma.album.update({
+      where: { id },
+      data: { ...updateAlbumDto },
+    });
   }
 
-  remove(id: string) {
-    const indexAlbum = albums.findIndex((album) => album.id == id);
-    if (indexAlbum == -1)
+  async remove(id: string) {
+    const album = await this.prisma.album.findUnique({
+      where: { id },
+    });
+    if (!album)
       throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
-    albums.splice(indexAlbum, 1);
+    await this.prisma.album.delete({
+      where: { id },
+    });
 
     tracks
       .filter((track) => track.albumId == id)

@@ -1,9 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { albums, artists, favorites, tracks } from 'src/database/database';
+import { albums, favorites, tracks } from 'src/database/database';
 import { StatusCodes } from 'http-status-codes';
-import { v4 as uuid } from 'uuid';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
