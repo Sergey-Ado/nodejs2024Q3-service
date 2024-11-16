@@ -16,7 +16,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - 5434:5434
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     restart: on-failure
     networks:
       - my_net

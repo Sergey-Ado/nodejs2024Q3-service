@@ -1,16 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-
-interface User {
-  id: string;
-  login: string;
-  password: string;
-  version: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 @Injectable()
 export class UserService {
@@ -20,13 +17,11 @@ export class UserService {
     const user = await this.prisma.user.create({
       data: { ...createUserDto },
     });
-    return this.cutUser(user);
+    return user;
   }
 
   async findAll() {
-    return (await this.prisma.user.findMany()).map((user) =>
-      this.cutUser(user),
-    );
+    return await this.prisma.user.findMany();
   }
 
   async findOne(id: string) {
@@ -35,7 +30,7 @@ export class UserService {
     });
     if (!user)
       throw new HttpException("user doesn't exist", HttpStatus.NOT_FOUND);
-    return this.cutUser(user);
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -50,7 +45,7 @@ export class UserService {
       where: { id },
       data: { password: updateUserDto.newPassword, version: ++user.version },
     });
-    return this.cutUser(newUser);
+    return newUser;
   }
 
   async remove(id: string) {
@@ -62,15 +57,5 @@ export class UserService {
     await this.prisma.user.delete({
       where: { id },
     });
-  }
-
-  cutUser(user: User) {
-    const cutUser = {
-      ...user,
-      createdAt: +user.createdAt,
-      updatedAt: +user.updatedAt,
-    };
-    delete cutUser.password;
-    return cutUser;
   }
 }
