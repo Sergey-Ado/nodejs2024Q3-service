@@ -21,7 +21,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "start:dev:migrate": "npx prisma migrate dev && npm run start:dev",
-    "scan:postgres": "docker scout quickview nodejs2024q3-service-postgres",
+    "scan:postgres": "docker scout quickview sergeyado/image-postgres",
     "scan:app": "docker scout quickview sergeyado/image-app",
     "docker:start": "docker compose up",
     "docker:stop": "docker stop app && docker stop database",
