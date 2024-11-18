@@ -23,6 +23,8 @@
     "start:dev:migrate": "npx prisma migrate dev && npm run start:dev",
     "scan:postgres": "docker scout quickview nodejs2024q3-service-postgres",
     "scan:app": "docker scout quickview sergeyado/image-app",
+    "docker:start": "docker compose up",
+    "docker:stop": "docker stop app && docker stop database",
     "docker:test": "docker exec app npm run test"
   },
   "dependencies": {
