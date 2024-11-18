@@ -25,7 +25,7 @@ npm install
 
 ## Running application
 
-1. By default, the application runs on PORT 4000. If necessary, you can create an .env file based on .env.example and specify the PORT you need in it. 
+1. Create a `.env` file based on the `.env.example` file. Change settings if necessary. 
 
 **Important!** When you restart the application with new settings, you must first delete containers and volumes.
 
