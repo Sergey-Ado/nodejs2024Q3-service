@@ -24,6 +24,7 @@ export class AlbumService {
     });
     if (!album)
       throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
+
     return album;
   }
 
@@ -33,6 +34,7 @@ export class AlbumService {
     });
     if (!album)
       throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
+
     return await this.prisma.album.update({
       where: { id },
       data: { ...updateAlbumDto },
@@ -45,26 +47,9 @@ export class AlbumService {
     });
     if (!album)
       throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
+
     await this.prisma.album.delete({
       where: { id },
-    });
-
-    await this.prisma.track.updateMany({
-      where: { albumId: id },
-      data: { albumId: null },
-    });
-
-    let favorites = await this.prisma.favorites.findUnique({
-      where: { id: 1 },
-    });
-    if (!favorites)
-      favorites = await this.prisma.favorites.create({
-        data: { artists: [], albums: [], tracks: [] },
-      });
-    favorites.albums = favorites.albums.filter((albumId) => albumId != id);
-    await this.prisma.favorites.updateMany({
-      where: { id: 1 },
-      data: { albums: favorites.albums },
     });
   }
 }

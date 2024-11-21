@@ -24,6 +24,7 @@ export class TrackService {
     });
     if (!track)
       throw new HttpException("Track doesn't exist", StatusCodes.NOT_FOUND);
+
     return track;
   }
 
@@ -33,6 +34,7 @@ export class TrackService {
     });
     if (!track)
       throw new HttpException("Track doesn't exist", StatusCodes.NOT_FOUND);
+
     return await this.prisma.track.update({
       where: { id },
       data: { ...updateTrackDto },
@@ -45,21 +47,9 @@ export class TrackService {
     });
     if (!track)
       throw new HttpException("Track doesn't exist", StatusCodes.NOT_FOUND);
+
     await this.prisma.track.delete({
       where: { id },
-    });
-
-    let favorites = await this.prisma.favorites.findUnique({
-      where: { id: 1 },
-    });
-    if (!favorites)
-      favorites = await this.prisma.favorites.create({
-        data: { artists: [], albums: [], tracks: [] },
-      });
-    favorites.tracks = favorites.tracks.filter((trackId) => trackId != id);
-    await this.prisma.favorites.update({
-      where: { id: 1 },
-      data: { tracks: favorites.tracks },
     });
   }
 }

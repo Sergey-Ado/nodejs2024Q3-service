@@ -3,8 +3,8 @@ services:
   postgres:
     env_file:
       - .env
-    container_name: postgres
-    build: ./postgres
+    container_name: ${POSTGRES_HOST}
+    image: sergeyado/image-postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -15,9 +15,23 @@ services:
       - PORT=${POSTGRES_PORT}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/logs
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     restart: on-failure
+    networks:
+      - my_net
+  app:
+    env_file: .env
+    container_name: app
+    image: sergeyado/image-app
+    ports:
+      - ${PORT:-4000}:${PORT:-4000}
+    depends_on:
+      - postgres
+    restart: always
+    volumes:
+      - ./src:/app/src
     networks:
       - my_net
 networks:
@@ -25,3 +39,4 @@ networks:
     driver: bridge
 volumes:
   postgres_data:
+  postgres_logs:

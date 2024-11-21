@@ -24,6 +24,7 @@ export class ArtistService {
     });
     if (!artist)
       throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
+
     return artist;
   }
 
@@ -33,6 +34,7 @@ export class ArtistService {
     });
     if (!artist)
       throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
+
     return await this.prisma.artist.update({
       where: { id },
       data: { ...updateArtistDto },
@@ -45,31 +47,9 @@ export class ArtistService {
     });
     if (!artist)
       throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
+
     await this.prisma.artist.delete({
       where: { id },
-    });
-
-    await this.prisma.album.updateMany({
-      where: { artistId: id },
-      data: { artistId: null },
-    });
-
-    await this.prisma.album.updateMany({
-      where: { artistId: id },
-      data: { artistId: null },
-    });
-
-    let favorites = await this.prisma.favorites.findUnique({
-      where: { id: 1 },
-    });
-    if (!favorites)
-      favorites = await this.prisma.favorites.create({
-        data: { artists: [], albums: [], tracks: [] },
-      });
-    favorites.artists = favorites.artists.filter((artistId) => artistId != id);
-    await this.prisma.favorites.update({
-      where: { id: 1 },
-      data: { artists: favorites.artists },
     });
   }
 }
