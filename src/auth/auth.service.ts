@@ -5,6 +5,7 @@ import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import 'dotenv/config';
+import { RefreshDto } from './dto/refresh.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
       data: { login: signUpDto.login, password: hash },
     });
     const { id, login } = user;
-    const tokens = await this.signToken(id, login);
+    const tokens = await this.genTokens(id, login);
     return { id, ...tokens };
   }
 
@@ -28,15 +29,41 @@ export class AuthService {
       throw new HttpException('Wrong login or password', HttpStatus.FORBIDDEN);
     }
 
-    return await this.signToken(user.id, user.login);
+    return await this.genTokens(user.id, user.login);
   }
 
-  async signToken(userId: string, login: string) {
+  async refresh(refreshDto: RefreshDto) {
+    console.log('ref', refreshDto.refreshToken);
+    if (!refreshDto.refreshToken) {
+      throw new HttpException(
+        'No refreshToken in body',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    try {
+      const payload = await this.jwt.verifyAsync(refreshDto.refreshToken, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+      });
+      console.log(payload);
+
+      const token = await this.genTokens(payload.userId, payload.login);
+      console.log(token);
+      return token;
+    } catch {
+      throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
+    }
+  }
+
+  async genTokens(userId: string, login: string) {
     const payload = { userId, login };
     return {
       accessToken: await this.jwt.signAsync(payload, {
         secret: process.env.JWT_SECRET_KEY,
         expiresIn: process.env.TOKEN_EXPIRE_TIME,
+      }),
+      refreshToken: await this.jwt.signAsync(payload, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+        expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME,
       }),
     };
   }
