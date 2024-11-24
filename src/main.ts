@@ -16,10 +16,10 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, doc);
 
   const logger = new LoggingService();
-  const httpAdapter = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new CatchEverythingFilter(httpAdapter));
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useLogger(logger);
+  const httpAdapter = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new CatchEverythingFilter(httpAdapter, logger));
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   await app.listen(process.env.PORT || 4000);
 
