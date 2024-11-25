@@ -36,6 +36,7 @@ npm run docker:start
 **Important!** When you first launch an application, postgres and application images is downloaded from Docker Hub. It can take some time.
 
 3. After starting the app on port you can open in your browser OpenAPI documentation by typing `http://localhost:{PORT}/doc/`.
+4. For ease of checking, `log` files inside the container are duplicated in the external `logs` folder
 
 ## Stop application
 ```
