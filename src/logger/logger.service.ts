@@ -30,7 +30,9 @@ export class LoggingService extends ConsoleLogger {
           this.writeLogToFile(index, message as string, context as string);
         };
       } else {
-        this[level] = () => {};
+        this[level] = () => {
+          return;
+        };
       }
     });
   }

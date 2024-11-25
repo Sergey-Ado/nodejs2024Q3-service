@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SignUpDto } from './dto/signUp.dto';
+import { SignUpDto } from './dto/signup.dto';
 import { LogInDto } from './dto/login.dto';
 import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
