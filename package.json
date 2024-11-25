@@ -25,7 +25,8 @@
     "scan:app": "docker scout quickview sergeyado/image-app",
     "docker:start": "docker compose up",
     "docker:stop": "docker stop app && docker stop database",
-    "docker:test": "docker exec app npm run test"
+    "docker:test:auth": "docker exec app npm run test:auth",
+    "docker:test:refresh": "docker exec app npm run test:refresh"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
