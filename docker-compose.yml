@@ -1,0 +1,43 @@
+version: '3.0'
+services:
+  postgres:
+    env_file:
+      - .env
+    container_name: ${POSTGRES_HOST}
+    image: sergeyado/image-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    command:
+      - postgres
+      - -c
+      - PORT=${POSTGRES_PORT}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/logs
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    restart: on-failure
+    networks:
+      - my_net
+  app:
+    env_file: .env
+    container_name: app
+    image: sergeyado/image-app-auth
+    ports:
+      - ${PORT:-4000}:${PORT:-4000}
+    depends_on:
+      - postgres
+    restart: always
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    networks:
+      - my_net
+networks:
+  my_net:
+    driver: bridge
+volumes:
+  postgres_data:
+  postgres_logs:

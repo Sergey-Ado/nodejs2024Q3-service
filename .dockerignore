@@ -1,0 +1,9 @@
+.git
+dist
+postgres
+Dockerfile
+docker-compose.yml
+.env
+.env.example
+node_modules
+README.md
