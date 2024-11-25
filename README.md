@@ -17,7 +17,7 @@ cd nodejs2024Q3-service
 
 ## Installing NPM modules
 ```
-git checkout dev-part2
+git checkout dev-part3
 ```
 ```
 npm install
