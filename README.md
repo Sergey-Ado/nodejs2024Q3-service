@@ -47,19 +47,23 @@ Important! The stop command must be run from a second terminal
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
+To run all tests with authorization
 ```
-npm run test
+npm run test:auth
 ```
+To run test of refresh token
+```
+npm run test:refresh
+```
+**Important!** Don't run `npm run test`. It is not meant for this task
 
-To run only one of all test suites
-```
-npm run test -- <path to suite>
-```
 
 To run tests inside the container
 ```
-npm run docker:test
+npm run docker:test:auth
+```
+```
+npm run docker:test:refresh
 ```
 
 ## Vulnerability scanning
