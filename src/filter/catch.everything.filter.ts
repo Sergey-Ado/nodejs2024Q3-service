@@ -37,7 +37,7 @@ export class CatchEverythingFilter implements ExceptionFilter {
 
     this.logger.error(
       `${responseBody.message} | ${responseBody.statusCode}`,
-      LoggingService.name,
+      'ExceptionFilter',
     );
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
