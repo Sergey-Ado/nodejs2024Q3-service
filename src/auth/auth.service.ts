@@ -33,7 +33,6 @@ export class AuthService {
   }
 
   async refresh(refreshDto: RefreshDto) {
-    console.log('ref', refreshDto.refreshToken);
     if (!refreshDto.refreshToken) {
       throw new HttpException(
         'No refreshToken in body',
@@ -44,10 +43,8 @@ export class AuthService {
       const payload = await this.jwt.verifyAsync(refreshDto.refreshToken, {
         secret: process.env.JWT_SECRET_REFRESH_KEY,
       });
-      console.log(payload);
 
       const token = await this.genTokens(payload.userId, payload.login);
-      console.log(token);
       return token;
     } catch {
       throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
